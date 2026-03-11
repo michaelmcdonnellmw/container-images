@@ -1,9 +1,13 @@
-# Copyright 2025 The MathWorks, Inc.
-FROM ubuntu:24.04
+# Copyright 2025-2026 The MathWorks, Inc.
+ARG PLATFORM=amd64
+
+FROM  --platform=linux/${PLATFORM} ubuntu:24.04
+
+ARG PLATFORM
 
 LABEL maintainer="The MathWorks"
 
-COPY base-dependencies.txt /tmp/base-dependencies.txt
+COPY base-dependencies-${PLATFORM}.txt /tmp/base-dependencies.txt
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
