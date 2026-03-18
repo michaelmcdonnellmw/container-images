@@ -5,7 +5,7 @@ FROM  --platform=linux/${PLATFORM} ubuntu:24.04
 
 ARG PLATFORM
 
-LABEL maintainer="The MathWorks"
+LABEL maintainer="The MathWorks, Inc."
 
 COPY base-dependencies-${PLATFORM}.txt /tmp/base-dependencies.txt
 
