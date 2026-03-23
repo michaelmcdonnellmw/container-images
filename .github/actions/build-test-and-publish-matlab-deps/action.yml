@@ -25,10 +25,6 @@ inputs:
   test_file_path:
     description: "Relative path to the root directory. Ex: ./tests/matlab-deps/test_ubuntu2204.py"
     required: false
-  platform:
-    description: "The target platform for the Docker image. Example: amd64 for linux/amd64. Default is linux/amd64."
-    required: false
-    default: "linux/amd64"
 
 runs:
   using: "composite"
@@ -64,22 +60,20 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
+        platforms: linux/amd64
         load: true
-        build-args: |
-          PLATFORM=${{ inputs.platform }}
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
 
     # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a
-    - name: Build Image for default OS
+    - name: Build Image for latest OS
       if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'true' }}
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
+        platforms: linux/amd64
         load: true
-        build-args: |
-          PLATFORM=${{ inputs.platform }}
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
@@ -87,14 +81,13 @@ runs:
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
 
     # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a, latest
-    - name: Build Image with latest Tag for default OS
+    - name: Build Image with latest Tag for latest OS
       if: ${{ inputs.should_add_latest_tag == 'true' && inputs.is_default_os == 'true' }}
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
+        platforms: linux/amd64
         load: true
-        build-args: |
-          PLATFORM=${{ inputs.platform }}
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}

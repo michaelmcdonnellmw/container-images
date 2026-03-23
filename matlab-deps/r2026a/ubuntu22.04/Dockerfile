@@ -1,5 +1,4 @@
 # Copyright 2026 The MathWorks, Inc.
-
 FROM ubuntu:22.04
 
 LABEL maintainer="The MathWorks, Inc."
