@@ -22,6 +22,9 @@ inputs:
   should_add_latest_tag:
     description: "Specify if this image should also be tagged as latest"
     required: true
+  platforms:
+    description: "Comma-separated list of platforms to build for. Example: linux/amd64,linux/arm64"
+    required: true
   test_file_path:
     description: "Relative path to the root directory. Ex: ./tests/matlab-deps/test_ubuntu2204.py"
     required: false
@@ -60,7 +63,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: linux/amd64
+        platforms: ${{ inputs.platforms }}
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
@@ -72,7 +75,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: linux/amd64
+        platforms: ${{ inputs.platforms }}
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
@@ -86,7 +89,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: linux/amd64
+        platforms: ${{ inputs.platforms }}
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
