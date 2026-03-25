@@ -39,27 +39,36 @@ on:
         description: "Relative path to the root directory. Ex: ./tests/matlab-deps/test_ubuntu2204.py"
         required: false
         type: string
+      platforms:
+        description: "Comma-separated list of platforms to build for. Example: linux/amd64,linux/arm64"
+        required: false
+        default: "local"
 
 jobs:
   build-push-image:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Generate Image Tags
+        id: image_tags
+        uses: ./.github/actions/matlab-deps-tags
+        with:
+          image_name: ${{ inputs.image_name }}
+          matlab_release_tag: ${{ inputs.matlab_release_tag }}
+          os_info_tag: ${{ inputs.os_info_tag }}
+          is_default_os: ${{ inputs.is_default_os }}
+          should_add_latest_tag: ${{ inputs.should_add_latest_tag }}
 
       - name: Build, Test, and Publish MATLAB-Deps
         uses: ./.github/actions/build-test-and-publish-matlab-deps
         with:
           docker_build_context: ${{ inputs.docker_build_context }}
           image_name: ${{ inputs.image_name }}
-          matlab_release_tag: ${{ inputs.matlab_release_tag }}
-          os_info_tag: ${{ inputs.os_info_tag }}
-          is_default_os: ${{ inputs.is_default_os }}
-          should_add_latest_tag: ${{ inputs.should_add_latest_tag }}
+          image_tags: ${{ steps.image_tags.outputs.tags }}
           test_file_path: ${{ inputs.test_file_path }}
+          platforms: ${{ inputs.platforms }}
