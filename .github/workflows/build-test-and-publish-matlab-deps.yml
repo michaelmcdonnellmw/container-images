@@ -137,21 +137,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Generate Image Tags
-        id: image_tags
-        uses: ./.github/actions/matlab-deps-tags
-        with:
-          image_name: ${{ env.image_name }}
-          matlab_release_tag: ${{ matrix.input.release_tag }}
-          os_info_tag: ${{ matrix.input.os_info_tag }}
-          is_default_os: ${{ matrix.input.os_info_tag == matrix.input.default_os }}
-          should_add_latest_tag: ${{ matrix.input.os_info_tag == matrix.input.default_os && matrix.input.release_tag == env.latest_release }}
-
+        # For now, only test linux/amd64 images.
       - name: Build, Test, and Publish MATLAB Dependencies
         uses: ./.github/actions/build-test-and-publish-matlab-deps
         with:
           docker_build_context: "./matlab-deps/${{ matrix.input.release_tag }}/${{ matrix.input.os_info_tag }}"
           image_name: ${{ env.image_name }}
-          image_tags: ${{ steps.image_tags.outputs.tags }}
+          matlab_release_tag: ${{ matrix.input.release_tag }}
+          os_info_tag: ${{ matrix.input.os_info_tag }}
+          is_default_os: ${{ matrix.input.os_info_tag == matrix.input.default_os }}
+          should_add_latest_tag: ${{ matrix.input.os_info_tag == matrix.input.default_os && matrix.input.release_tag == env.latest_release }}
           test_file_path: tests/matlab-deps/${{ matrix.input.test_file_name }}
           platforms: ${{ matrix.input.platforms }}
