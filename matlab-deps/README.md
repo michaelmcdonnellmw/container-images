@@ -4,6 +4,8 @@ These images include the dependencies required to run MATLAB®, Simulink®, and 
 
 **Note: These images do not include MATLAB. To use a prebuild MATLAB container image, see the [MATLAB Container Image](https://hub.docker.com/r/mathworks/matlab) on Docker Hub. To build your own MATLAB container image, follow [these instructions](https://github.com/mathworks-ref-arch/matlab-dockerfile).**
 
+**Note: The images for the linux/arm64 architectures are in beta-testing. Please, report any issues to [MathWorks Support](https://www.mathworks.com/support/contact_us.html).**
+
 ## Base Operating System Update Policy
 The default image for each MATLAB release is based on the latest Ubuntu Long Term Support base image that is supported by that release. To see the supported Ubuntu versions, see the [MATLAB and Simulink Requirements](https://www.mathworks.com/support/requirements/previous-releases.html) page for the Linux system requirements of that MATLAB release.
 
