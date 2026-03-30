@@ -90,27 +90,31 @@ jobs:
         #      "release_tag": "r2019b",
         #      "os_info_tag": "aws-batch",
         #      "default_os": "ubuntu24.04",
+        #      "platforms": "linux/amd64"
         #      "test_file_name": "test_awsbatch.py"
         #    },
         #    {
         #      "release_tag": "r2019b",
         #      "os_info_tag": "ubuntu24.04",
         #      "default_os": "ubuntu24.04",
+        #      "platforms": "linux/amd64"
         #      "test_file_name": "test_ubuntu2404.py"
         #    },
         #    ...
         #    {
-        #      "release_tag": "r2024b",
+        #      "release_tag": "r2026a",
         #      "os_info_tag": "aws-batch",
-        #      "default_os": "ubuntu22.04",
+        #      "default_os": "ubuntu24.04",
+        #      "platforms": "linux/amd64,linux/arm64"
         #      "test_file_name": "test_awsbatch.py"
         #    },
         #    ...
         #    {
-        #      "release_tag": "r2024b",
-        #      "os_info_tag": "ubuntu22.04",
+        #      "release_tag": "r2026a",
+        #      "os_info_tag": "ubuntu24.04",
         #      "default_os": "ubuntu24.04",
-        #      "test_file_name": "test_ubuntu2204.py"
+        #      "platforms": "linux/amd64,linux/arm64"
+        #      "test_file_name": "test_ubuntu2404.py"
         #    }
         #  ]
         #
