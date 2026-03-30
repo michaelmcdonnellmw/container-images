@@ -20,10 +20,18 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && rm -rf /var/lib/apt/lists/*
 
 # Install the AWS CLI to use for staging input and output data
-RUN wget "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -O "awscliv2.zip" \
+RUN if [ "$TARGETARCH"=="amd64" ]; then \
+    AWSCLI_ARCH="x86_64"; \
+    elif [ "$TARGETARCH"=="arm64" ]; then \
+    AWSCLI_ARCH="aarch64"; \
+    else \
+    echo "Error: Unsupported architecture: $TARGETARCH. Only amd64 and arm64 are supported." && exit 1; \
+    fi && \
+    wget "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH}.zip" -O "awscliv2.zip" \
     && unzip awscliv2.zip \
     && ./aws/install \
     && rm -rf awscliv2.zip aws
+
 
 # Create directories for the MATLAB install and for the JobStorageLocation
 ENV JOB_STORAGE_LOCATION=/usr/local/JobStorageLocation
