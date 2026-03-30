@@ -42,6 +42,9 @@ env:
 jobs:
   generate-matrix:
     runs-on: ubuntu-latest
+
+    permissions: {}
+
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
 
@@ -129,6 +132,9 @@ jobs:
       fail-fast: false
       matrix:
         input: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+
+    permissions:
+      contents: read
 
     steps:
       - name: Login to Docker Hub
