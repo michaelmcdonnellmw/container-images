@@ -26,8 +26,8 @@ RUN if [ "$TARGETARCH"=="amd64" ]; then \
     AWSCLI_ARCH="aarch64"; \
     else \
     echo "Error: Unsupported architecture: $TARGETARCH. Only amd64 and arm64 are supported." && exit 1; \
-    fi && \
-    wget "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH}.zip" -O "awscliv2.zip" \
+    fi \
+    && wget "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH}.zip" -O "awscliv2.zip" \
     && unzip awscliv2.zip \
     && ./aws/install \
     && rm -rf awscliv2.zip aws
