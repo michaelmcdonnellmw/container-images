@@ -22,21 +22,25 @@ on:
 env:
   image_name: mathworks/matlab-deps
   latest_release: r2026a
+  # releases: '[
+  #   { "release": "r2019b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2020a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2020b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2021a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2021b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2022a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2022b", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2023a", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2023b", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2024a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2024b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2025a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2025b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
+  #   { "release": "r2026a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64,linux/arm64" }
+  #   ]'
   releases: '[
-    { "release": "r2019b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2020a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2020b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2021a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2021b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2022a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2022b", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2023a", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2023b", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2024a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2024b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2025a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2025b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2026a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64,linux/arm64" }
+    { "release": "r2025b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubuntu22.04", ], "platforms": "linux/amd64" },
+    { "release": "r2026a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi9", "ubuntu24.04"], "platforms": "linux/amd64,linux/arm64" }
     ]'
 
 jobs:
