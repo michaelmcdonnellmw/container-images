@@ -67,7 +67,7 @@ runs:
       with:
         context: ${{ inputs.docker_build_context }}
         platforms: ${{ inputs.platforms }}
-        load: true
+        # load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
@@ -79,7 +79,7 @@ runs:
       with:
         context: ${{ inputs.docker_build_context }}
         platforms: ${{ inputs.platforms }}
-        load: true
+        # load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
@@ -93,7 +93,7 @@ runs:
       with:
         context: ${{ inputs.docker_build_context }}
         platforms: ${{ inputs.platforms }}
-        load: true
+        # load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
