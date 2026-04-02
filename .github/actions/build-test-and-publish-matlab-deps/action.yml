@@ -1,4 +1,4 @@
-# Copyright 2025 The MathWorks, Inc.
+# Copyright 2025-2026 The MathWorks, Inc.
 
 name: Build Test and Publish a Matlab-Deps Image
 description: This action builds, tests, and publishes a MATLAB-Deps Docker image to DockerHub.
