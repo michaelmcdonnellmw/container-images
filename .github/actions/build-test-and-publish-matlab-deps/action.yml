@@ -71,14 +71,6 @@ runs:
       uses: docker/setup-qemu-action@v4
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v4
-      with:
-          daemon-config: |
-            {
-              "debug": true,
-              "features": {
-                "containerd-snapshotter": true
-              }
-            }
 
     # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04
     - name: Build Image
