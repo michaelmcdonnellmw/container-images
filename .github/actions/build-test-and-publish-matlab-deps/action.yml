@@ -40,6 +40,9 @@ runs:
         echo "Invalid situation detected. A workflow marked as latest must also set the default os to be true. "
         exit 1
 
+    - name: Checkout repo
+      uses: actions/checkout@v6
+
     - name: Setup Image Tags
       id: setup_image_tags
       shell: bash
@@ -50,11 +53,6 @@ runs:
         && echo "TAG_RELEASE_ONLY_PASCAL_CASE=${LOWER_CASE_MATLAB_RELEASE^}" >> "${GITHUB_OUTPUT}" \
         && echo "TAG_RELEASE_AND_OS_CAMEL_CASE=${LOWER_CASE_MATLAB_RELEASE}-${{ inputs.os_info_tag }}" >> "${GITHUB_OUTPUT}" \
         && echo "TAG_RELEASE_AND_OS_PASCAL_CASE=${LOWER_CASE_MATLAB_RELEASE^}-${{ inputs.os_info_tag }}" >> "${GITHUB_OUTPUT}"
-
-    - name: Checkout repo
-      uses: actions/checkout@v6
-
-
 
     # set up Docker, QEMU and Buildx to allow for multi-platform builds
     - name: Set up Docker
