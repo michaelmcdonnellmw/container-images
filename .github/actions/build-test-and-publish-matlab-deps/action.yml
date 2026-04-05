@@ -60,14 +60,15 @@ runs:
       with:
         daemon-config: |
           {
+            "debug": true,
             "features": {
               "containerd-snapshotter": true
             }
           }
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v4
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v4
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v4
 
     # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04
     - name: Build Image
@@ -109,10 +110,6 @@ runs:
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
           ${{ inputs.image_name }}:latest
-
-    - name: DEBUG - TO REMOVE
-      shell: bash
-      run: docker image ls
 
     - name: Should Run Tests
       id: run_tests
