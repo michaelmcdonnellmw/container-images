@@ -20,7 +20,7 @@ on:
       - "tests/matlab-deps/**"
 
 env:
-  image_name: epaganon/matlab-deps
+  image_name: mathworks/matlab-deps
   latest_release: r2026a
   # releases: '[
   #   { "release": "r2019b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },

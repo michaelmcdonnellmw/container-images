@@ -155,4 +155,6 @@ runs:
 
     - name: Push Image
       shell: bash
-      run: docker push --platform ${{ inputs.platforms}} --all-tags ${{ inputs.image_name }}
+      run: |
+        dokcer tag ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }} epaganon/matlab-deps:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
+        docker push --platform ${{ inputs.platforms}} --all-tags epaganon/matlab-deps
