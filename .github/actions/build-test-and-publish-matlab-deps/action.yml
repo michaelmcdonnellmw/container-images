@@ -109,6 +109,7 @@ runs:
           ${{ inputs.image_name }}:latest
 
     - name: DEBUG - TO REMOVE
+      shell: bash
       run: docker image ls
 
     - name: Should Run Tests
