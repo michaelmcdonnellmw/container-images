@@ -60,20 +60,17 @@ runs:
       with:
         daemon-config: |
           {
-            "debug": true,
             "features": {
               "containerd-snapshotter": true
             }
           }
-    - name: Set up Docker QEMU
-      uses: docker/setup-qemu-action@v4
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v4
 
     # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04
     - name: Build Image
       if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'false' }}
-      uses: docker/build-push-action@v7
+      uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
         platforms: ${{ inputs.platforms }}
@@ -85,7 +82,7 @@ runs:
     # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a
     - name: Build Image for latest OS
       if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'true' }}
-      uses: docker/build-push-action@v7
+      uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
         platforms: ${{ inputs.platforms }}
@@ -99,7 +96,7 @@ runs:
     # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a, latest
     - name: Build Image with latest Tag for latest OS
       if: ${{ inputs.should_add_latest_tag == 'true' && inputs.is_default_os == 'true' }}
-      uses: docker/build-push-action@v7
+      uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
         platforms: ${{ inputs.platforms }}
@@ -110,6 +107,9 @@ runs:
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
           ${{ inputs.image_name }}:latest
+
+    - name: DEBUG - TO REMOVE
+      run: docker image ls
 
     - name: Should Run Tests
       id: run_tests
