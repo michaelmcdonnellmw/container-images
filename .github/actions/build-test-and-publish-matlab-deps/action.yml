@@ -54,7 +54,6 @@ runs:
         && echo "TAG_RELEASE_AND_OS_CAMEL_CASE=${LOWER_CASE_MATLAB_RELEASE}-${{ inputs.os_info_tag }}" >> "${GITHUB_OUTPUT}" \
         && echo "TAG_RELEASE_AND_OS_PASCAL_CASE=${LOWER_CASE_MATLAB_RELEASE^}-${{ inputs.os_info_tag }}" >> "${GITHUB_OUTPUT}"
 
-    # set up Docker Buildx
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
@@ -98,12 +97,6 @@ runs:
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
           ${{ inputs.image_name }}:latest
-
-    - name: Reset Docker
-      uses: docker/setup-docker-action@v5
-      with:
-        daemon-config: |
-          {}
 
     - name: Should Run Tests
       id: run_tests
