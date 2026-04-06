@@ -54,19 +54,7 @@ runs:
         && echo "TAG_RELEASE_AND_OS_CAMEL_CASE=${LOWER_CASE_MATLAB_RELEASE}-${{ inputs.os_info_tag }}" >> "${GITHUB_OUTPUT}" \
         && echo "TAG_RELEASE_AND_OS_PASCAL_CASE=${LOWER_CASE_MATLAB_RELEASE^}-${{ inputs.os_info_tag }}" >> "${GITHUB_OUTPUT}"
 
-    # set up Docker, QEMU and Buildx to allow for multi-platform builds
-    - name: Set up Docker
-      uses: docker/setup-docker-action@v5
-      with:
-        daemon-config: |
-          {
-            "debug": true,
-            "features": {
-              "containerd-snapshotter": true
-            }
-          }
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v4
+    # set up Docker Buildx
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
@@ -76,7 +64,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: ${{ inputs.platforms }}
+        platforms: linux/amd64
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
@@ -88,7 +76,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: ${{ inputs.platforms }}
+        platforms: linux/amd64
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
@@ -102,7 +90,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: ${{ inputs.platforms }}
+        platforms: linux/amd64
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
@@ -117,47 +105,85 @@ runs:
         daemon-config: |
           {}
 
-    # - name: Should Run Tests
-    #   id: run_tests
-    #   shell: bash
-    #   run: |
-    #     if [ -n "${{ inputs.test_file_path }}" ]; then
-    #       echo "should_run=true" >> $GITHUB_OUTPUT
-    #     else
-    #       echo "should_run=false" >> $GITHUB_OUTPUT
-    #     fi
-
-    # - name: Set up Python 3
-    #   if: ${{ steps.run_tests.outputs.should_run == 'true' }}
-    #   uses: actions/setup-python@v6
-    #   with:
-    #     python-version: "3.10"
-
-    # - name: Install test dependencies
-    #   if: ${{ steps.run_tests.outputs.should_run == 'true' }}
-    #   shell: bash
-    #   working-directory: tests
-    #   run: |
-    #     python -m pip install --upgrade pip
-    #     pip install -r requirements.txt
-
-    # - name: Get test relative path
-    #   id: get_test_path
-    #   if: ${{ steps.run_tests.outputs.should_run == 'true' }}
-    #   shell: bash
-    #   run: |
-    #     TESTDIR=tests
-    #     echo "testdir=${TESTDIR}" >> $GITHUB_OUTPUT
-    #     echo "relpath=$(realpath --relative-to=${TESTDIR} ${{ inputs.test_file_path }})" >> $GITHUB_OUTPUT
-
-    # - name: Test container
-    #   if: ${{ steps.run_tests.outputs.should_run == 'true' }}
-    #   shell: bash
-    #   env:
-    #     IMAGE_NAME: "${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}"
-    #   working-directory: ${{ steps.get_test_path.outputs.testdir }}
-    #   run: python -m unittest -v ${{ steps.get_test_path.outputs.relpath }}
-
-    - name: Push Image
+    - name: Should Run Tests
+      id: run_tests
       shell: bash
-      run: docker push --all-tags ${{ inputs.image_name }}
+      run: |
+        if [ -n "${{ inputs.test_file_path }}" ]; then
+          echo "should_run=true" >> $GITHUB_OUTPUT
+        else
+          echo "should_run=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Set up Python 3
+      if: ${{ steps.run_tests.outputs.should_run == 'true' }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.10"
+
+    - name: Install test dependencies
+      if: ${{ steps.run_tests.outputs.should_run == 'true' }}
+      shell: bash
+      working-directory: tests
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Get test relative path
+      id: get_test_path
+      if: ${{ steps.run_tests.outputs.should_run == 'true' }}
+      shell: bash
+      run: |
+        TESTDIR=tests
+        echo "testdir=${TESTDIR}" >> $GITHUB_OUTPUT
+        echo "relpath=$(realpath --relative-to=${TESTDIR} ${{ inputs.test_file_path }})" >> $GITHUB_OUTPUT
+
+    - name: Test container
+      if: ${{ steps.run_tests.outputs.should_run == 'true' }}
+      shell: bash
+      env:
+        IMAGE_NAME: "${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}"
+      working-directory: ${{ steps.get_test_path.outputs.testdir }}
+      run: python -m unittest -v ${{ steps.get_test_path.outputs.relpath }}
+
+
+    # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04
+    - name: Push Image
+      if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'false' }}
+      uses: docker/build-push-action@v6
+      with:
+        context: ${{ inputs.docker_build_context }}
+        platforms: ${{ inputs.platforms }}
+        push: true
+        tags: |
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
+
+    # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a
+    - name: Push Image for latest OS
+      if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'true' }}
+      uses: docker/build-push-action@v6
+      with:
+        context: ${{ inputs.docker_build_context }}
+        platforms: ${{ inputs.platforms }}
+        push: true
+        tags: |
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
+
+    # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a, latest
+    - name: Push Image with latest Tag for latest OS
+      if: ${{ inputs.should_add_latest_tag == 'true' && inputs.is_default_os == 'true' }}
+      uses: docker/build-push-action@v6
+      with:
+        context: ${{ inputs.docker_build_context }}
+        platforms: ${{ inputs.platforms }}
+        push: true
+        tags: |
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
+          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
+          ${{ inputs.image_name }}:latest
