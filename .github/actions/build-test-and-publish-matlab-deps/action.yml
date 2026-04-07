@@ -54,6 +54,21 @@ runs:
         && echo "TAG_RELEASE_AND_OS_CAMEL_CASE=${LOWER_CASE_MATLAB_RELEASE}-${{ inputs.os_info_tag }}" >> "${GITHUB_OUTPUT}" \
         && echo "TAG_RELEASE_AND_OS_PASCAL_CASE=${LOWER_CASE_MATLAB_RELEASE^}-${{ inputs.os_info_tag }}" >> "${GITHUB_OUTPUT}"
 
+    # Setup Docker, QEMU, and Buildx to support building multi-arch images
+    - name: Set up Docker
+      uses: docker/setup-docker-action@v5
+      with:
+        daemon-config: |
+          {
+            "debug": true,
+            "features": {
+              "containerd-snapshotter": true
+            }
+          }
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v4
+    
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
@@ -63,7 +78,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: linux/amd64
+        platforms: ${{ inputs.platforms }}
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
@@ -75,7 +90,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: linux/amd64
+        platforms: ${{ inputs.platforms }}
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
@@ -89,7 +104,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.docker_build_context }}
-        platforms: linux/amd64
+        platforms: ${{ inputs.platforms }}
         load: true
         tags: |
           ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
@@ -139,44 +154,47 @@ runs:
       working-directory: ${{ steps.get_test_path.outputs.testdir }}
       run: python -m unittest -v ${{ steps.get_test_path.outputs.relpath }}
 
+    - name: Push Image
+      shell: bash
+      run: docker push --all-tags ${{ inputs.image_name }}
 
     # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04
-    - name: Push Image
-      if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'false' }}
-      uses: docker/build-push-action@v6
-      with:
-        context: ${{ inputs.docker_build_context }}
-        platforms: ${{ inputs.platforms }}
-        push: true
-        tags: |
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
+    # - name: Push Image
+    #   if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'false' }}
+    #   uses: docker/build-push-action@v6
+    #   with:
+    #     context: ${{ inputs.docker_build_context }}
+    #     platforms: ${{ inputs.platforms }}
+    #     push: true
+    #     tags: |
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
 
-    # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a
-    - name: Push Image for latest OS
-      if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'true' }}
-      uses: docker/build-push-action@v6
-      with:
-        context: ${{ inputs.docker_build_context }}
-        platforms: ${{ inputs.platforms }}
-        push: true
-        tags: |
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
+    # # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a
+    # - name: Push Image for latest OS
+    #   if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'true' }}
+    #   uses: docker/build-push-action@v6
+    #   with:
+    #     context: ${{ inputs.docker_build_context }}
+    #     platforms: ${{ inputs.platforms }}
+    #     push: true
+    #     tags: |
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
 
-    # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a, latest
-    - name: Push Image with latest Tag for latest OS
-      if: ${{ inputs.should_add_latest_tag == 'true' && inputs.is_default_os == 'true' }}
-      uses: docker/build-push-action@v6
-      with:
-        context: ${{ inputs.docker_build_context }}
-        platforms: ${{ inputs.platforms }}
-        push: true
-        tags: |
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
-          ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
-          ${{ inputs.image_name }}:latest
+    # # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04, r2023a, R2023a, latest
+    # - name: Push Image with latest Tag for latest OS
+    #   if: ${{ inputs.should_add_latest_tag == 'true' && inputs.is_default_os == 'true' }}
+    #   uses: docker/build-push-action@v6
+    #   with:
+    #     context: ${{ inputs.docker_build_context }}
+    #     platforms: ${{ inputs.platforms }}
+    #     push: true
+    #     tags: |
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_CAMEL_CASE }}
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_ONLY_PASCAL_CASE }}
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_CAMEL_CASE }}
+    #       ${{ inputs.image_name }}:${{ steps.setup_image_tags.outputs.TAG_RELEASE_AND_OS_PASCAL_CASE }}
+    #       ${{ inputs.image_name }}:latest
