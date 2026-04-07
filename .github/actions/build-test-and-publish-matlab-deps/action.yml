@@ -139,7 +139,7 @@ runs:
       working-directory: ${{ steps.get_test_path.outputs.testdir }}
       run: python -m unittest -v ${{ steps.get_test_path.outputs.relpath }}
 
-    Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04
+    # Example tags: r2023a-ubuntu24.04, R2023a-ubuntu24.04
     - name: Push Image
       if: ${{ inputs.should_add_latest_tag == 'false' && inputs.is_default_os == 'false' }}
       uses: docker/build-push-action@v6
