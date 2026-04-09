@@ -7,7 +7,7 @@ ARG TARGETARCH
 COPY base-dependencies-${TARGETARCH}.txt /tmp/base-dependencies.txt
 
 RUN yum update --disableplugin=subscription-manager -y \
-    && yum install --disableplugin=subscription-manager -y `cat /tmp/base-dependencies.txt` \
+    && yum install --disableplugin=subscription-manager --allowerasing -y `cat /tmp/base-dependencies.txt` \
     && yum --disableplugin=subscription-manager clean all -y
 
 # To make sure non-ASCII data processed in UTF-8
