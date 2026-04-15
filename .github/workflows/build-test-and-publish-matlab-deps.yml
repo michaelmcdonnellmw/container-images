@@ -10,9 +10,8 @@ on:
   # Runs at 02:00 every Monday
   schedule:
     - cron: "0 2 * * 1"
-
   push:
-    branches: ["main"]
+    branches: ["epaganon/arm64"]
     paths:
       - ".github/workflows/build-test-and-publish-matlab-deps.yml"
       - ".github/actions/build-test-and-publish-matlab-deps/action.yml"
@@ -20,22 +19,9 @@ on:
       - "tests/matlab-deps/**"
 
 env:
-  image_name: mathworks/matlab-deps
+  image_name: ghcr.io/michaelmcdonnellmw/container-images/matlab-deps
   latest_release: r2026a
   releases: '[
-    { "release": "r2019b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2020a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2020b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2021a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2021b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2022a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2022b", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2023a", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2023b", "default_os": "ubuntu22.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2024a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2024b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2025a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
-    { "release": "r2025b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64" },
     { "release": "r2026a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64,linux/arm64" }
     ]'
 
@@ -143,12 +129,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v4
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build, Test, and Publish MATLAB Dependencies
         uses: ./.github/actions/build-test-and-publish-matlab-deps
