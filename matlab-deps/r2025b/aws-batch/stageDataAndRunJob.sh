@@ -8,7 +8,7 @@
 # PARALLEL_SERVER_JOB_LOCATION    - The job's storage location.
 # PARALLEL_SERVER_TASK_ID_OFFSET  - The offset of the Task's ID relative to the value of AWS_BATCH_JOB_ARRAY_INDEX.
 
-# Copyright 2025 The MathWorks, Inc.
+# Copyright 2026 The MathWorks, Inc.
 
 # The first argument is the path to the job wrapper.
 JOB_WRAPPER=${1}

@@ -1,9 +1,10 @@
-# Copyright 2025 The MathWorks, Inc.
+# Copyright 2026 The MathWorks, Inc.
 FROM ubuntu:24.04
 
 LABEL maintainer="The MathWorks, Inc."
 
-COPY base-dependencies.txt /tmp/base-dependencies.txt
+ARG TARGETARCH
+COPY base-dependencies-${TARGETARCH}.txt /tmp/base-dependencies.txt
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \

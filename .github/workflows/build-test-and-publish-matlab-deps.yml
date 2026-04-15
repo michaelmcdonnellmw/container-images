@@ -20,9 +20,9 @@ on:
 
 env:
   image_name: ghcr.io/michaelmcdonnellmw/container-images/matlab-deps
-  latest_release: r2026a
+  latest_release: r2025b
   releases: '[
-    { "release": "r2026a", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64,linux/arm64" }
+    { "release": "r2025b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64,linux/arm64" }
     ]'
 
 jobs:
@@ -88,7 +88,7 @@ jobs:
         #    },
         #    ...
         #    {
-        #      "release_tag": "r2026a",
+        #      "release_tag": "r2025b",
         #      "os_info_tag": "aws-batch",
         #      "default_os": "ubuntu24.04",
         #      "platforms": "linux/amd64,linux/arm64"
@@ -96,7 +96,7 @@ jobs:
         #    },
         #    ...
         #    {
-        #      "release_tag": "r2026a",
+        #      "release_tag": "r2025b",
         #      "os_info_tag": "ubuntu24.04",
         #      "default_os": "ubuntu24.04",
         #      "platforms": "linux/amd64,linux/arm64"

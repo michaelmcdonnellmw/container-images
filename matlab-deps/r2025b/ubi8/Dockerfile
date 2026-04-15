@@ -1,9 +1,10 @@
-# Copyright 2025 The MathWorks, Inc.
+# Copyright 2026 The MathWorks, Inc.
 FROM registry.access.redhat.com/ubi8/ubi:latest
 
 LABEL maintainer="The MathWorks, Inc."
 
-COPY base-dependencies.txt /tmp/base-dependencies.txt
+ARG TARGETARCH
+COPY base-dependencies-${TARGETARCH}.txt /tmp/base-dependencies.txt
 
 RUN yum update --disableplugin=subscription-manager -y \
     && yum install --disableplugin=subscription-manager -y `cat /tmp/base-dependencies.txt` \

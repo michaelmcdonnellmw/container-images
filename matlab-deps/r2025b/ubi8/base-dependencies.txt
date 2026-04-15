@@ -26,13 +26,11 @@ libXtst.x86_64
 libXxf86vm.x86_64
 libatomic.x86_64
 libcap.x86_64
-libdrm.x86_64
 libglvnd-glx.x86_64
 libibverbs.x86_64
 librdmacm.x86_64
 libsndfile.x86_64
 libtirpc.x86_64
-libtool-ltdl.x86_64
 libuuid.x86_64
 libxcrypt.x86_64
 make.x86_64
@@ -47,6 +45,7 @@ pango.x86_64
 pixman.x86_64
 procps-ng.x86_64
 sudo.x86_64
+systemd-libs.x86_64
 unzip.x86_64
 which.x86_64
 zlib.x86_64

@@ -1,6 +1,6 @@
-# Copyright 2025 The MathWorks, Inc.
+# Copyright 2026 The MathWorks, Inc.
 
-FROM nvidia/cuda:12.2.2-base-ubuntu22.04
+FROM nvidia/cuda:12.8.1-base-ubuntu24.04
 
 LABEL maintainer="The MathWorks, Inc."
 
@@ -8,9 +8,10 @@ LABEL maintainer="The MathWorks, Inc."
 # csh                  - Support MATLAB's Engine API for C and Fortran. See https://www.mathworks.com/help/matlab/matlab_external/introducing-matlab-engine.html
 # gcc, g++, gfortran   - Support Simulink code generation and mex with gcc, g++, or gfortran.
 # locales, locales-all - Provide extended locales support
-# python3, python3-pip - Python and pip are to run/install the AWS CLI.
+# python3, python3-pip - Python and pip are to run the AWS CLI.
 # unzip, zip           - Used to stage input/output data.
-COPY base-dependencies.txt /tmp/base-dependencies.txt
+ARG TARGETARCH
+COPY base-dependencies-${TARGETARCH}.txt /tmp/base-dependencies.txt
 
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
@@ -18,14 +19,23 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get clean && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /
-
 # Install the AWS CLI to use for staging input and output data
-RUN pip3 install awscli
+RUN if [ "$TARGETARCH"=="amd64" ]; then \
+    AWSCLI_ARCH="x86_64"; \
+    elif [ "$TARGETARCH"=="arm64" ]; then \
+    AWSCLI_ARCH="aarch64"; \
+    else \
+    echo "Error: Unsupported architecture: $TARGETARCH. Only amd64 and arm64 are supported." && exit 1; \
+    fi \
+    && wget "https://awscli.amazonaws.com/awscli-exe-linux-${AWSCLI_ARCH}.zip" -O "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf awscliv2.zip aws
+
 
 # Create directories for the MATLAB install and for the JobStorageLocation
-ENV JOB_STORAGE_LOCATION /usr/local/JobStorageLocation
-ENV MATLAB_INSTALL_LOCATION /usr/local/matlab
+ENV JOB_STORAGE_LOCATION=/usr/local/JobStorageLocation
+ENV MATLAB_INSTALL_LOCATION=/usr/local/matlab
 RUN mkdir -p ${MATLAB_INSTALL_LOCATION} ${JOB_STORAGE_LOCATION}
 RUN chmod -R +wx ${JOB_STORAGE_LOCATION}
 
