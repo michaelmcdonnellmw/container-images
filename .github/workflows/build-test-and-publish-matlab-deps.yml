@@ -22,7 +22,7 @@ env:
   image_name: ghcr.io/michaelmcdonnellmw/container-images/matlab-deps
   latest_release: r2025b
   releases: '[
-    { "release": "r2025b", "default_os": "ubuntu24.04", "supported_os": ["aws-batch", "ubi8", "ubi9", "ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64,linux/arm64" }
+    { "release": "r2025b", "default_os": "ubuntu24.04", "supported_os": ["ubuntu22.04", "ubuntu24.04"], "platforms": "linux/amd64,linux/arm64" }
     ]'
 
 jobs:
@@ -129,6 +129,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build, Test, and Publish MATLAB Dependencies
         uses: ./.github/actions/build-test-and-publish-matlab-deps
